@@ -14,7 +14,7 @@ The idea of the app is to track my daily activities and habits.
     - [ ] Settings page.
     - [x] Login page.
 - [ ] Desing the web version on Figma.
-    - [ ] Home page.
+    - [x] Home page.
     - [ ] Side menu.
     - [ ] View mode.
     - [ ] Habit page.
