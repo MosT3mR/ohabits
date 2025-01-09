@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import { Square, CheckSquare } from 'lucide-react'
 
 interface Task {
   id: string
@@ -22,17 +23,21 @@ export default function TaskList({ title, tasks }: TaskListProps) {
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         {taskList.map((task) => (
           <div key={task.id} className="flex items-center gap-2.5">
-            <input
-              type="checkbox"
-              checked={task.completed}
-              onChange={() => {
+            <button
+              onClick={() => {
                 setTaskList(taskList.map(t => 
                   t.id === task.id ? {...t, completed: !t.completed} : t
                 ))
               }}
-              className="w-4 h-4 border-2 border-[#2A3433] rounded"
-            />
-            <span className="text-[#5F6666] text-sm">{task.text}</span>
+              className="text-[#2A3433] hover:opacity-75"
+            >
+              {task.completed ? (
+                <CheckSquare size={20} />
+              ) : (
+                <Square size={20} />
+              )}
+            </button>
+            <span className="text-[#5f6666] text-[10px] font-semibold leading-[120%] tracking-[0.02em]">{task.text}</span>
           </div>
         ))}
       </div>

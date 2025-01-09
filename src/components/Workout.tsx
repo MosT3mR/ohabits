@@ -54,7 +54,7 @@ export default function Workout({ date, weight }: WorkoutProps) {
         {/* Header */}
         <div>
           <h2 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-1 text-center">Workout</h2>
-          <div className="bg-[#EAEBEB] rounded px-4 py-2 text-[#5F6666] inline-block mx-[170px] flex justify-center text-[10px] font-semibold leading-[120%] tracking-[0.08em] uppercase">
+          <div className="bg-[#EAEBEB] rounded px-4 py-2 text-[#5F6666] inline-block text-[10px] font-semibold leading-[120%] tracking-[0.08em] uppercase mx-auto flex justify-center items-center w-fit">
             {weight || 'YOUR WEIGHT TODAY'}
           </div>
         </div>
