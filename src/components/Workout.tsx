@@ -109,7 +109,9 @@ export default function Workout({ date, weight }: WorkoutProps) {
         {/* Workout Plan */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <span className="text-[10px] font-semibold leading-[120%] tracking-[0.02em] text-black w-20">Today's plan</span>
+            <span className="text-sm text-gray-500">
+              {"Today's plan"}
+            </span>
             <div className="relative w-full">
               <button 
                 className="ml-2 bg-[#EAEBEB] rounded py-2 px-2 text-[#5F6666] text-[10px] font-semibold leading-[120%] tracking-[0.08em] uppercase flex items-center w-full"
@@ -143,7 +145,7 @@ export default function Workout({ date, weight }: WorkoutProps) {
 
           {/* Exercise List */}
           <div className="border border-[#5F6666] rounded-lg p-4 space-y-3">
-            {todayWorkout.exercises.map((exercise, index) => (
+            {todayWorkout.exercises.map((exercise) => (
               <div key={exercise.id} className="flex flex-col space-y-2">
                 <span className="text-[10px] font-semibold leading-[120%] tracking-[0.02em] text-black">
                   {exercise.name}

@@ -11,7 +11,7 @@ export default function WorkoutSummary() {
       <h2 className="text-lg font-semibold mb-4">Workout Summary</h2>
       {todayWorkout ? (
         <div>
-          <p className="text-sm text-gray-600">Today's Workout</p>
+          <p className="text-sm text-gray-600">{"Today's Workout"}</p>
           <p className="text-xl font-medium">{todayWorkout.name}</p>
           <p className="text-sm text-gray-600 mt-2">
             {todayWorkout.exercises.length} exercises planned
