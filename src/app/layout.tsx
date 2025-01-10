@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header"
 import { HabitsProvider } from '@/context/HabitsContext'
 import { WorkoutProvider } from '@/context/WorkoutContext'
+import SupabaseProvider from '@/providers/SupabaseProvider'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -22,12 +23,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <WorkoutProvider>
-          <HabitsProvider>
-            <Header />
-            <main>{children}</main>
-          </HabitsProvider>
-        </WorkoutProvider>
+        <SupabaseProvider>
+          <WorkoutProvider>
+            <HabitsProvider>
+              <Header />
+              <main>{children}</main>
+            </HabitsProvider>
+          </WorkoutProvider>
+        </SupabaseProvider>
       </body>
     </html>
   );

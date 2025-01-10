@@ -1,84 +1,128 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client"
+
+import { useState } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  
+  const router = useRouter()
+  const supabase = createClientComponentClient()
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) throw error
+
+      router.push('/')
+      router.refresh()
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-[#FEF7F3] p-4">
-      <div className="max-w-[395px] mx-auto">
-        <div className="p-4 bg-white rounded-lg space-y-6">
-          <div className="flex items-center justify-center gap-2">
-            <h1 className="text-center font-bold text-[23px] leading-[122%] tracking-[-0.02em] text-[#1e0c02]">Login</h1>
-            <Image src="/svg/login.svg" alt="Logo" width={24} height={24} />
-          </div>
+    <div className="min-h-screen bg-[#FEF7F3] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Sign in to your account
+        </h2>
+      </div>
 
-          {/* Email & Password Form */}
-          <div className="space-y-4">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <form className="space-y-6" onSubmit={handleLogin}>
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-400 p-4 text-red-700">
+                {error}
+              </div>
+            )}
+
             <div>
-              <div className="relative">
-                <Image 
-                  src="/svg/email.svg" 
-                  alt="Email" 
-                  width={16} 
-                  height={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2"
-                />
-                <input 
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email address
+              </label>
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
                   type="email"
-                  className="w-full pl-12 pr-4 py-2 rounded bg-[#FEF7F3] border border-[#EAEBEB] placeholder:text-[#5F6666] text-[#1e0c02]"
-                  placeholder="Enter your email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
             </div>
+
             <div>
-              <div className="relative">
-                <Image 
-                  src="/svg/password.svg" 
-                  alt="Password" 
-                  width={16} 
-                  height={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2"
-                />
-                <input 
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
                   type="password"
-                  className="w-full pl-12 pr-4 py-2 rounded bg-[#FEF7F3] border border-[#EAEBEB] placeholder:text-[#5F6666] text-[#1e0c02]"
-                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
             </div>
-            <button className="w-full bg-[#F2600C] text-[#fcfcfc] py-3 rounded font-semibold text-[18px] leading-[120%]">
-              Sign In
-            </button>
-          </div>
 
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#1e0c02]"></div>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#F26008] hover:bg-[#F26008]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
+              >
+                {loading ? 'Signing in...' : 'Sign in'}
+              </button>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-[#1e0c02]">or continue with</span>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  Don&apos;t have an account?
+                </span>
+              </div>
             </div>
-          </div>
 
-          {/* Social Login */}
-          <div className="space-y-1">
-            <button className="w-full flex items-center justify-center gap-2 py-3 border border-[#EAEBEB] rounded">
-              <Image src="/svg/google.svg" alt="Google" width={20} height={20} className="text-[#181919]" />
-              <span className="font-semibold text-[18px] leading-[120%] text-center text-[#181919]">Sign In with Google</span>
-            </button>
-          </div>
-
-          {/* Create Account & Reset Password */}
-          <div className="text-center space-y-4">
-            <button className="w-full py-3 border border-[#EAEBEB] rounded">
-              <span className="font-semibold text-[18px] leading-[120%] text-[#181919]">Create Account</span>
-            </button>
-            <Link href="/reset-password" className="block text-[12px] font-semibold leading-[117%] tracking-[0.08em] uppercase underline decoration-skip-ink-none text-black">
-              RESET YOUR PASSWORD
-            </Link>
+            <div className="mt-6">
+              <Link
+                href="/signup"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[#F26008] bg-white border-[#F26008] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              >
+                Sign up
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
