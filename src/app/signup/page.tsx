@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
+import { AuthError } from '@supabase/supabase-js'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')
@@ -29,13 +30,22 @@ export default function SignUpPage() {
         },
       })
 
-      if (signUpError) throw signUpError
+      if (signUpError) {
+        setError(signUpError.message)
+        return
+      }
 
       // Show success message and redirect
       alert('Check your email to confirm your account!')
       router.push('/login')
-    } catch (error) {
-      setError(error.message)
+    } catch (err) {
+      if (err instanceof AuthError) {
+        setError(err.message)
+      } else if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('An unexpected error occurred')
+      }
     } finally {
       setLoading(false)
     }
@@ -56,7 +66,6 @@ export default function SignUpPage() {
             </div>
           )}
 
-          {/* Email & Password Form */}
           <div className="space-y-4">
             <div>
               <div className="relative">
@@ -103,7 +112,6 @@ export default function SignUpPage() {
             </button>
           </div>
 
-          {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-[#1e0c02]"></div>
@@ -113,7 +121,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Social Login */}
           <div className="space-y-1">
             <button 
               type="button"
@@ -124,7 +131,6 @@ export default function SignUpPage() {
             </button>
           </div>
 
-          {/* Login Link */}
           <div className="text-center">
             <Link 
               href="/login" 

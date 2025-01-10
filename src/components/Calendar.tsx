@@ -1,19 +1,17 @@
 "use client"
 
-import { useState } from 'react'
-
-interface CalendarProps {
+export interface CalendarProps {
   isOpen?: boolean
 }
 
 export default function Calendar({ isOpen = false }: CalendarProps) {
+  if (!isOpen) return null
+
   const daysInMonth = new Date(
     new Date().getFullYear(),
     new Date().getMonth() + 1,
     0
   ).getDate()
-
-  if (!isOpen) return null
 
   const weekDays = ['S', 'S', 'M', 'T', 'W', 'T', 'F']
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1)

@@ -3,7 +3,6 @@
 import React from 'react'
 import { useState } from 'react'
 import { Plus, Minus, ChevronDown } from 'lucide-react'
-import Image from 'next/image'
 import { useWorkout } from '@/context/WorkoutContext'
 
 interface WorkoutProps {

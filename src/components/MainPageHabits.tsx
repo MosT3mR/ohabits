@@ -1,54 +1,87 @@
 "use client"
 
-import { Square, CheckSquare } from 'lucide-react'
 import { useHabits } from '@/context/HabitsContext'
+import { Plus } from 'lucide-react'
+import { useState } from 'react'
 
 export default function MainPageHabits() {
-  const { habits, setHabits } = useHabits([])
+  const { habits, setHabits, addHabit } = useHabits()
+  const [showAddHabit, setShowAddHabit] = useState(false)
+  const [newHabitName, setNewHabitName] = useState('')
+
   const today = new Date().getDay()
-  // Adjust Sunday from 0 to 6 to match our array index
   const dayIndex = today === 0 ? 6 : today - 1
 
-  const toggleCompletion = (habitId: string) => {
-    setHabits(habits.map(habit => {
-      if (habit.id === habitId) {
-        return { ...habit, completed: !habit.completed }
-      }
-      return habit
-    }))
+  const toggleHabit = (habitId: string) => {
+    setHabits(prev => prev.map(habit => 
+      habit.id === habitId 
+        ? { ...habit, completed: !habit.completed }
+        : habit
+    ))
   }
 
-  // Filter habits scheduled for today
+  const handleAddHabit = () => {
+    if (newHabitName.trim()) {
+      addHabit(newHabitName.trim())
+      setNewHabitName('')
+      setShowAddHabit(false)
+    }
+  }
+
   const todaysHabits = habits.filter(habit => habit.scheduledDays[dayIndex])
 
   return (
-    <div>
-      <h2 className="text-center font-bold text-[23px] leading-[122%] tracking-[-0.02em] text-[#1e0c02] mb-4">
-        Habits
-      </h2>
+    <div className="space-y-4 pb-7 border-b border-[#EAEBEB]">
+      <h3 className="text-[#1E0C02] text-xl">Habits</h3>
       <div className="space-y-2">
-        {todaysHabits.length === 0 ? (
-          <p className="text-center text-[14px] text-[#5f6666]">No habits today !</p>
-        ) : (
-          <div className="grid grid-cols-2 gap-2">
-            {todaysHabits.map(habit => (
-              <div key={habit.id} className="flex items-center space-x-2">
-                <button 
-                  onClick={() => toggleCompletion(habit.id)}
-                  className="text-[#2A3433] hover:opacity-75"
-                >
-                  {habit.completed ? (
-                    <CheckSquare size={20} />
-                  ) : (
-                    <Square size={20} />
-                  )}
-                </button>
-                <span className="text-[10px] font-semibold leading-[120%] tracking-[0.02em] text-[#5f6666]">{habit.text}</span>
-              </div>
-            ))}
-          </div>
-        )}
+        {todaysHabits.map(habit => (
+          <button
+            key={habit.id}
+            onClick={() => toggleHabit(habit.id)}
+            className={`w-full p-3 rounded flex items-center justify-between ${
+              habit.completed ? 'bg-[#F2600C] text-white' : 'bg-[#FEF7F3]'
+            }`}
+          >
+            <span>{habit.name}</span>
+            {habit.completed && <span>✓</span>}
+          </button>
+        ))}
       </div>
+      
+      {showAddHabit ? (
+        <div className="space-y-2">
+          <input
+            type="text"
+            value={newHabitName}
+            onChange={(e) => setNewHabitName(e.target.value)}
+            placeholder="Enter new habit"
+            className="w-full p-2 border rounded"
+            onKeyDown={(e) => e.key === 'Enter' && handleAddHabit()}
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={handleAddHabit}
+              className="px-4 py-2 bg-[#F2600C] text-white rounded"
+            >
+              Add
+            </button>
+            <button
+              onClick={() => setShowAddHabit(false)}
+              className="px-4 py-2 border rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowAddHabit(true)}
+          className="flex items-center gap-2 text-sm text-[#F2600C]"
+        >
+          <Plus size={16} />
+          Add Habit
+        </button>
+      )}
     </div>
   )
 } 
