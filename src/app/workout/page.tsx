@@ -1,16 +1,108 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus, ChevronDown, Minus } from 'lucide-react'
 import { useWorkout } from '@/context/WorkoutContext'
 
 const days = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
+const defaultWorkouts = [
+  {
+    id: '1',
+    name: 'Push Day',
+    day: 'Monday',
+    exercises: [
+      { id: '1-1', name: 'Bench Press', sets: [{ reps: 12, weight: 0 }] },
+      { id: '1-2', name: 'Shoulder Press', sets: [{ reps: 12, weight: 0 }] },
+      { id: '1-3', name: 'Tricep Extensions', sets: [{ reps: 12, weight: 0 }] },
+      { id: '1-4', name: 'Lateral Raises', sets: [{ reps: 12, weight: 0 }] },
+    ]
+  },
+  {
+    id: '2',
+    name: 'Pull Day',
+    day: 'Tuesday',
+    exercises: [
+      { id: '2-1', name: 'Barbell Rows', sets: [{ reps: 12, weight: 0 }] },
+      { id: '2-2', name: 'Pull-ups', sets: [{ reps: 12, weight: 0 }] },
+      { id: '2-3', name: 'Bicep Curls', sets: [{ reps: 12, weight: 0 }] },
+      { id: '2-4', name: 'Face Pulls', sets: [{ reps: 12, weight: 0 }] },
+    ]
+  },
+  {
+    id: '3',
+    name: 'Leg Day',
+    day: 'Wednesday',
+    exercises: [
+      { id: '3-1', name: 'Squats', sets: [{ reps: 12, weight: 0 }] },
+      { id: '3-2', name: 'Deadlifts', sets: [{ reps: 12, weight: 0 }] },
+      { id: '3-3', name: 'Leg Press', sets: [{ reps: 12, weight: 0 }] },
+      { id: '3-4', name: 'Calf Raises', sets: [{ reps: 12, weight: 0 }] },
+    ]
+  },
+  {
+    id: '4',
+    name: 'Upper Body',
+    day: 'Thursday',
+    exercises: [
+      { id: '4-1', name: 'Incline Press', sets: [{ reps: 12, weight: 0 }] },
+      { id: '4-2', name: 'Lat Pulldowns', sets: [{ reps: 12, weight: 0 }] },
+      { id: '4-3', name: 'Dips', sets: [{ reps: 12, weight: 0 }] },
+      { id: '4-4', name: 'Cable Rows', sets: [{ reps: 12, weight: 0 }] },
+    ]
+  },
+  {
+    id: '5',
+    name: 'Lower Body',
+    day: 'Friday',
+    exercises: [
+      { id: '5-1', name: 'Front Squats', sets: [{ reps: 12, weight: 0 }] },
+      { id: '5-2', name: 'Romanian Deadlifts', sets: [{ reps: 12, weight: 0 }] },
+      { id: '5-3', name: 'Lunges', sets: [{ reps: 12, weight: 0 }] },
+      { id: '5-4', name: 'Leg Extensions', sets: [{ reps: 12, weight: 0 }] },
+    ]
+  },
+  {
+    id: '6',
+    name: 'Core & Cardio',
+    day: 'Saturday',
+    exercises: [
+      { id: '6-1', name: 'Planks', sets: [{ reps: 12, weight: 0 }] },
+      { id: '6-2', name: 'Russian Twists', sets: [{ reps: 12, weight: 0 }] },
+      { id: '6-3', name: 'Mountain Climbers', sets: [{ reps: 12, weight: 0 }] },
+      { id: '6-4', name: 'Leg Raises', sets: [{ reps: 12, weight: 0 }] },
+    ]
+  },
+  {
+    id: '7',
+    name: 'Recovery',
+    day: 'Sunday',
+    exercises: [
+      { id: '7-1', name: 'Stretching', sets: [{ reps: 12, weight: 0 }] },
+      { id: '7-2', name: 'Yoga', sets: [{ reps: 12, weight: 0 }] },
+      { id: '7-3', name: 'Foam Rolling', sets: [{ reps: 12, weight: 0 }] },
+      { id: '7-4', name: 'Light Walking', sets: [{ reps: 12, weight: 0 }] },
+    ]
+  }
+]
+
 export default function WorkoutPage() {
   const { workouts, setWorkouts } = useWorkout()
   const [newWorkoutName, setNewWorkoutName] = useState('')
   const [showDaySelector, setShowDaySelector] = useState<string | null>(null)
-  const [collapsedWorkouts, setCollapsedWorkouts] = useState<Set<string>>(new Set())
+  
+  // Initialize collapsedWorkouts with all workout IDs
+  const [collapsedWorkouts, setCollapsedWorkouts] = useState<Set<string>>(() => {
+    const initialCollapsed = new Set<string>()
+    defaultWorkouts.forEach(workout => initialCollapsed.add(workout.id))
+    return initialCollapsed
+  })
+
+  useEffect(() => {
+    if (workouts.length === 0) {
+      setWorkouts(defaultWorkouts)
+    }
+  }, [workouts.length, setWorkouts])
 
   const addWorkout = () => {
     if (!newWorkoutName.trim()) return

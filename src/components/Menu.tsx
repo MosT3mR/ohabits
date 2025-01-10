@@ -10,10 +10,11 @@ interface MenuProps {
 }
 
 export default function Menu({ isOpen, onClose }: MenuProps) {
+  console.log('Menu component rendered, isOpen:', isOpen)
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 top-[52px] bg-white z-50">
+    <div className="fixed inset-0 top-[52px] bg-white z-[52]">
       <div className="p-4 space-y-6">
         <nav className="space-y-6 pl-[6px]">
           <Link href="/" onClick={onClose} className="flex items-center space-x-4">

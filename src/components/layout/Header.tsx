@@ -14,7 +14,10 @@ export default function Header() {
           <>
             <button 
               className="menu-btn w-6 h-6 flex flex-col justify-around p-[3px]"
-              onClick={() => setIsMenuOpen(true)}
+              onClick={() => {
+                console.log('Menu button clicked, current state:', isMenuOpen)
+                setIsMenuOpen(true)
+              }}
             >
               <span className="w-[18px] h-[2px] bg-[#F4F5F7]" />
               <span className="w-[18px] h-[2px] bg-[#F4F5F7]" />

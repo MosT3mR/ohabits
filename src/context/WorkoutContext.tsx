@@ -29,7 +29,14 @@ const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined)
 
 export function WorkoutProvider({ children }: { children: React.ReactNode }) {
   const [workouts, setWorkouts] = useState<Workout[]>([])
-  const [selectedDay, setSelectedDay] = useState('Saturday')
+  // Get current day of week
+  const getCurrentDay = () => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const today = new Date().getDay()
+    return days[today]
+  }
+  
+  const [selectedDay, setSelectedDay] = useState(getCurrentDay())
 
   return (
     <WorkoutContext.Provider value={{ workouts, setWorkouts, selectedDay, setSelectedDay }}>
