@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 import { HabitsProvider } from '@/context/HabitsContext'
+import { WorkoutProvider } from '@/context/WorkoutContext'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -22,11 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <HabitsProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </HabitsProvider>
+        <WorkoutProvider>
+          <HabitsProvider>
+            <Header />
+            <main>{children}</main>
+          </HabitsProvider>
+        </WorkoutProvider>
       </body>
     </html>
   );
