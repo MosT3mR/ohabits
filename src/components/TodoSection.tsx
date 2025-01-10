@@ -34,7 +34,8 @@ export default function TodoSection() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-7">
+      <h3 className="text-[#1E0C02] text-xl">{"Today's Tasks"}</h3>
       <TaskList title="Todo's" tasks={todos} />
       
       {/* Add Todo Input */}

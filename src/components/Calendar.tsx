@@ -7,13 +7,16 @@ interface CalendarProps {
 }
 
 export default function Calendar({ isOpen = false }: CalendarProps) {
-  const [currentMonth] = useState(new Date().getMonth())
-  const [currentYear] = useState(new Date().getFullYear())
+  const daysInMonth = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth() + 1,
+    0
+  ).getDate()
 
   if (!isOpen) return null
 
   const weekDays = ['S', 'S', 'M', 'T', 'W', 'T', 'F']
-  const days = Array.from({ length: 30 }, (_, i) => i + 1)
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1)
 
   return (
     <div className="bg-white rounded-lg shadow p-4">

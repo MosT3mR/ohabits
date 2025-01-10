@@ -3,17 +3,25 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
+import type { SupabaseClient, User } from '@supabase/supabase-js'
 
-const SupabaseContext = createContext<ReturnType<typeof createClientComponentClient>>({} as any)
+interface SupabaseContextType {
+  supabase: SupabaseClient
+  user: User | null
+}
+
+const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined)
 
 export default function SupabaseProvider({ children }: { children: React.ReactNode }) {
   const [supabase] = useState(() => createClientComponentClient())
+  const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
 
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
       router.refresh()
     })
 
@@ -23,7 +31,7 @@ export default function SupabaseProvider({ children }: { children: React.ReactNo
   }, [router, supabase])
 
   return (
-    <SupabaseContext.Provider value={supabase}>
+    <SupabaseContext.Provider value={{ supabase, user }}>
       {children}
     </SupabaseContext.Provider>
   )

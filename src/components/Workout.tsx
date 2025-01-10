@@ -7,17 +7,16 @@ import Image from 'next/image'
 import { useWorkout } from '@/context/WorkoutContext'
 
 interface WorkoutProps {
-  date?: string
   weight?: string
 }
 
-export default function Workout({ date, weight }: WorkoutProps) {
+export default function Workout({ weight }: WorkoutProps) {
   const { workouts, selectedDay, setSelectedDay, setWorkouts } = useWorkout()
   const [showDaySelector, setShowDaySelector] = useState(false)
   const [cardioExercises, setCardioExercises] = useState<Array<{name: string, minutes: number}>>([
     { name: '', minutes: 0 }
-  ]);
-  
+  ])
+
   // Find today's workout based on selectedDay
   const todayWorkout = workouts.find(workout => workout.day === selectedDay)
 
