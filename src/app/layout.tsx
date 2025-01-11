@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header"
 import { HabitsProvider } from '@/context/HabitsContext'
 import { WorkoutProvider } from '@/context/WorkoutContext'
 import SupabaseProvider from '@/providers/SupabaseProvider'
+import { AuthProvider } from '@/context/AuthContext'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -24,12 +25,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={roboto.className}>
         <SupabaseProvider>
-          <WorkoutProvider>
-            <HabitsProvider>
-              <Header />
-              <main>{children}</main>
-            </HabitsProvider>
-          </WorkoutProvider>
+          <AuthProvider>
+            <WorkoutProvider>
+              <HabitsProvider>
+                <Header />
+                <main>{children}</main>
+              </HabitsProvider>
+            </WorkoutProvider>
+          </AuthProvider>
         </SupabaseProvider>
       </body>
     </html>
