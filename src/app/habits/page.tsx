@@ -9,7 +9,7 @@ export default function HabitsPage() {
   const [newHabitName, setNewHabitName] = useState('')
   const [editingHabitId, setEditingHabitId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState('')
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   const handleAddHabit = async (e: React.FormEvent) => {
     e.preventDefault()

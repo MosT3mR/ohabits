@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Plus, ChevronDown, Minus, Edit2, Save, Trash2 } from 'lucide-react'
 import { useWorkout } from '@/context/WorkoutContext'
 
-const days = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 export default function WorkoutPage() {
   const { workouts, saveWorkout, deleteWorkout, updateWorkout } = useWorkout()
@@ -13,10 +13,11 @@ export default function WorkoutPage() {
   const [editingWorkoutId, setEditingWorkoutId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState('')
 
+  // Initialize all workouts as collapsed
   useEffect(() => {
-    const initialCollapsed = new Set(workouts.map(w => w.id))
-    setCollapsedWorkouts(initialCollapsed)
-  }, [workouts])
+    const allWorkoutIds = workouts.map(w => w.id)
+    setCollapsedWorkouts(new Set(allWorkoutIds))
+  }, []) // Only run once on mount
 
   const addWorkout = async () => {
     if (!newWorkoutName.trim()) return
@@ -39,12 +40,25 @@ export default function WorkoutPage() {
   }
 
   const updateWorkoutDay = async (workoutId: string, day: string) => {
+    // Ensure workout stays expanded during update
+    setCollapsedWorkouts(prev => {
+      const next = new Set(prev)
+      next.delete(workoutId)
+      return next
+    })
     await updateWorkout(workoutId, { day })
   }
 
   const addExercise = async (workoutId: string, exerciseName: string) => {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
+
+    // Keep workout expanded
+    setCollapsedWorkouts(prev => {
+      const next = new Set(prev)
+      next.delete(workoutId)
+      return next
+    })
 
     await updateWorkout(workoutId, {
       exercises: [
@@ -62,6 +76,13 @@ export default function WorkoutPage() {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
 
+    // Keep workout expanded
+    setCollapsedWorkouts(prev => {
+      const next = new Set(prev)
+      next.delete(workoutId)
+      return next
+    })
+
     await updateWorkout(workoutId, {
       exercises: workout.exercises.map(exercise => 
         exercise.id === exerciseId ? { ...exercise, name } : exercise
@@ -72,6 +93,13 @@ export default function WorkoutPage() {
   const updateReps = async (workoutId: string, exerciseId: string, setIndex: number, reps: number) => {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
+
+    // Keep workout expanded
+    setCollapsedWorkouts(prev => {
+      const next = new Set(prev)
+      next.delete(workoutId)
+      return next
+    })
 
     await updateWorkout(workoutId, {
       exercises: workout.exercises.map(exercise => {
@@ -92,6 +120,13 @@ export default function WorkoutPage() {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
 
+    // Keep workout expanded
+    setCollapsedWorkouts(prev => {
+      const next = new Set(prev)
+      next.delete(workoutId)
+      return next
+    })
+
     await updateWorkout(workoutId, {
       exercises: workout.exercises.map(exercise => {
         if (exercise.id === exerciseId) {
@@ -109,6 +144,13 @@ export default function WorkoutPage() {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
 
+    // Keep workout expanded
+    setCollapsedWorkouts(prev => {
+      const next = new Set(prev)
+      next.delete(workoutId)
+      return next
+    })
+
     await updateWorkout(workoutId, {
       exercises: workout.exercises.map(exercise => {
         if (exercise.id === exerciseId) {
@@ -123,6 +165,10 @@ export default function WorkoutPage() {
   }
 
   const toggleWorkout = (workoutId: string) => {
+    // Only allow toggling if we're not editing anything
+    const workout = workouts.find(w => w.id === workoutId)
+    if (!workout || editingWorkoutId === workoutId) return
+
     setCollapsedWorkouts(prev => {
       const next = new Set(prev)
       if (next.has(workoutId)) {
