@@ -1,31 +1,102 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSupabase } from '@/providers/SupabaseProvider'
+
+interface Todo {
+  id: string
+  text: string
+  completed: boolean
+  date: string
+  user_id: string
+}
 
 export default function TodoSection() {
-  const [todos, setTodos] = useState([
-    { id: 1, text: 'Morning workout', completed: true },
-    { id: 2, text: 'Read for 30 minutes', completed: false },
-    { id: 3, text: 'Meditate', completed: true },
-  ])
-
+  const [todos, setTodos] = useState<Todo[]>([])
   const [newTodo, setNewTodo] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const { supabase, user } = useSupabase()
+  const today = new Date().toISOString().split('T')[0]
 
-  const handleAddTodo = () => {
-    if (!newTodo.trim()) return
-    
-    setTodos(prev => [...prev, {
-      id: Math.max(...prev.map(t => t.id), 0) + 1,
-      text: newTodo,
-      completed: false
-    }])
-    setNewTodo('')
+  // Fetch today's todos
+  useEffect(() => {
+    const fetchTodos = async () => {
+      if (!user) {
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('todos')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('date', today)
+
+        if (error) throw error
+
+        setTodos(data || [])
+      } catch (error) {
+        console.error('Error fetching todos:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchTodos()
+  }, [supabase, user, today])
+
+  const handleAddTodo = async () => {
+    if (!newTodo.trim() || !user) return
+
+    try {
+      const { data, error } = await supabase
+        .from('todos')
+        .insert([{
+          text: newTodo,
+          completed: false,
+          date: today,
+          user_id: user.id
+        }])
+        .select()
+        .single()
+
+      if (error) throw error
+
+      if (data) {
+        setTodos(prev => [...prev, data])
+        setNewTodo('')
+      }
+    } catch (error) {
+      console.error('Error adding todo:', error)
+    }
   }
 
-  const toggleTodo = (id: number) => {
-    setTodos(prev => prev.map(todo => 
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ))
+  const toggleTodo = async (id: string) => {
+    if (!user) return
+
+    const todo = todos.find(t => t.id === id)
+    if (!todo) return
+
+    try {
+      const { error } = await supabase
+        .from('todos')
+        .update({ completed: !todo.completed })
+        .eq('id', id)
+        .eq('user_id', user.id)
+
+      if (error) throw error
+
+      setTodos(prev => prev.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      ))
+    } catch (error) {
+      console.error('Error toggling todo:', error)
+    }
+  }
+
+  if (isLoading) {
+    return <div className="text-center py-4">Loading...</div>
   }
 
   return (
