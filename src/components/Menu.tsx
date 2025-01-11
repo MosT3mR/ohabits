@@ -2,6 +2,8 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Home, LayoutGrid, Hash, Dumbbell, User, Settings, Instagram, Twitter, Github } from 'lucide-react'
 
 interface MenuProps {
@@ -10,8 +12,28 @@ interface MenuProps {
 }
 
 export default function Menu({ isOpen, onClose }: MenuProps) {
-  console.log('Menu component rendered, isOpen:', isOpen)
+  const router = useRouter()
+  const supabase = createClientComponentClient()
+
   if (!isOpen) return null
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Error signing out:', error)
+        alert('Error signing out')
+        return
+      }
+      
+      // Close the menu and redirect to login page
+      onClose()
+      router.push('/login')
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error signing out')
+    }
+  }
 
   return (
     <div className="fixed inset-0 top-[52px] bg-white z-[52]">
@@ -49,13 +71,16 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
         </nav>
 
         <div className="mt-6">
-          <button className="w-[310px] h-[80px] bg-[#F26008] rounded-[25px] text-white text-2xl mx-auto block mt-20">
-            sign out
+          <button 
+            onClick={handleSignOut}
+            className="w-[310px] h-[80px] bg-[#F26008] rounded-[25px] text-white text-2xl mx-auto block mt-20 hover:bg-[#E05A0C] transition-colors"
+          >
+            Sign Out
           </button>
         </div>
 
         {/* Social Links and Credit */}
-        <div className="absolute bottom-8 left-0 right-0 ">
+        <div className="absolute bottom-8 left-0 right-0">
           <div className="flex justify-center space-x-20 mb-4 pb-4">
             <Link 
               href="https://instagram.com/othman.alomair" 
