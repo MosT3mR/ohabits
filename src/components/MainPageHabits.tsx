@@ -4,17 +4,9 @@ import { useHabits } from '@/context/HabitsContext'
 import Link from 'next/link'
 
 export default function MainPageHabits() {
-  const { habits, setHabits } = useHabits()
+  const { habits, toggleHabit } = useHabits()
   const today = new Date().getDay()
   const dayIndex = today === 0 ? 6 : today - 1
-
-  const toggleHabit = (habitId: string) => {
-    setHabits(prev => prev.map(habit => 
-      habit.id === habitId 
-        ? { ...habit, completed: !habit.completed }
-        : habit
-    ))
-  }
 
   const todaysHabits = habits.filter(habit => habit.scheduledDays[dayIndex])
 
