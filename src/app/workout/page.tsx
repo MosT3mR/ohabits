@@ -12,10 +12,10 @@ const defaultWorkouts = [
     name: 'Push Day',
     day: 'Monday',
     exercises: [
-      { id: '1-1', name: 'Bench Press', sets: [{ reps: 12, weight: 0 }] },
-      { id: '1-2', name: 'Shoulder Press', sets: [{ reps: 12, weight: 0 }] },
-      { id: '1-3', name: 'Tricep Extensions', sets: [{ reps: 12, weight: 0 }] },
-      { id: '1-4', name: 'Lateral Raises', sets: [{ reps: 12, weight: 0 }] },
+      { id: '1-1', name: 'Bench Press', sets: [{ reps: 12 }] },
+      { id: '1-2', name: 'Shoulder Press', sets: [{ reps: 12 }] },
+      { id: '1-3', name: 'Tricep Extensions', sets: [{ reps: 12 }] },
+      { id: '1-4', name: 'Lateral Raises', sets: [{ reps: 12 }] },
     ]
   },
   {
@@ -23,10 +23,10 @@ const defaultWorkouts = [
     name: 'Pull Day',
     day: 'Tuesday',
     exercises: [
-      { id: '2-1', name: 'Barbell Rows', sets: [{ reps: 12, weight: 0 }] },
-      { id: '2-2', name: 'Pull-ups', sets: [{ reps: 12, weight: 0 }] },
-      { id: '2-3', name: 'Bicep Curls', sets: [{ reps: 12, weight: 0 }] },
-      { id: '2-4', name: 'Face Pulls', sets: [{ reps: 12, weight: 0 }] },
+      { id: '2-1', name: 'Barbell Rows', sets: [{ reps: 12 }] },
+      { id: '2-2', name: 'Pull-ups', sets: [{ reps: 12 }] },
+      { id: '2-3', name: 'Bicep Curls', sets: [{ reps: 12 }] },
+      { id: '2-4', name: 'Face Pulls', sets: [{ reps: 12 }] },
     ]
   },
   {
@@ -34,10 +34,10 @@ const defaultWorkouts = [
     name: 'Leg Day',
     day: 'Wednesday',
     exercises: [
-      { id: '3-1', name: 'Squats', sets: [{ reps: 12, weight: 0 }] },
-      { id: '3-2', name: 'Deadlifts', sets: [{ reps: 12, weight: 0 }] },
-      { id: '3-3', name: 'Leg Press', sets: [{ reps: 12, weight: 0 }] },
-      { id: '3-4', name: 'Calf Raises', sets: [{ reps: 12, weight: 0 }] },
+      { id: '3-1', name: 'Squats', sets: [{ reps: 12 }] },
+      { id: '3-2', name: 'Deadlifts', sets: [{ reps: 12 }] },
+      { id: '3-3', name: 'Leg Press', sets: [{ reps: 12 }] },
+      { id: '3-4', name: 'Calf Raises', sets: [{ reps: 12 }] },
     ]
   },
   {
@@ -45,10 +45,10 @@ const defaultWorkouts = [
     name: 'Upper Body',
     day: 'Thursday',
     exercises: [
-      { id: '4-1', name: 'Incline Press', sets: [{ reps: 12, weight: 0 }] },
-      { id: '4-2', name: 'Lat Pulldowns', sets: [{ reps: 12, weight: 0 }] },
-      { id: '4-3', name: 'Dips', sets: [{ reps: 12, weight: 0 }] },
-      { id: '4-4', name: 'Cable Rows', sets: [{ reps: 12, weight: 0 }] },
+      { id: '4-1', name: 'Incline Press', sets: [{ reps: 12 }] },
+      { id: '4-2', name: 'Lat Pulldowns', sets: [{ reps: 12 }] },
+      { id: '4-3', name: 'Dips', sets: [{ reps: 12 }] },
+      { id: '4-4', name: 'Cable Rows', sets: [{ reps: 12 }] },
     ]
   },
   {
@@ -56,10 +56,10 @@ const defaultWorkouts = [
     name: 'Lower Body',
     day: 'Friday',
     exercises: [
-      { id: '5-1', name: 'Front Squats', sets: [{ reps: 12, weight: 0 }] },
-      { id: '5-2', name: 'Romanian Deadlifts', sets: [{ reps: 12, weight: 0 }] },
-      { id: '5-3', name: 'Lunges', sets: [{ reps: 12, weight: 0 }] },
-      { id: '5-4', name: 'Leg Extensions', sets: [{ reps: 12, weight: 0 }] },
+      { id: '5-1', name: 'Front Squats', sets: [{ reps: 12 }] },
+      { id: '5-2', name: 'Romanian Deadlifts', sets: [{ reps: 12 }] },
+      { id: '5-3', name: 'Lunges', sets: [{ reps: 12 }] },
+      { id: '5-4', name: 'Leg Extensions', sets: [{ reps: 12 }] },
     ]
   },
   {
@@ -67,10 +67,10 @@ const defaultWorkouts = [
     name: 'Core & Cardio',
     day: 'Saturday',
     exercises: [
-      { id: '6-1', name: 'Planks', sets: [{ reps: 12, weight: 0 }] },
-      { id: '6-2', name: 'Russian Twists', sets: [{ reps: 12, weight: 0 }] },
-      { id: '6-3', name: 'Mountain Climbers', sets: [{ reps: 12, weight: 0 }] },
-      { id: '6-4', name: 'Leg Raises', sets: [{ reps: 12, weight: 0 }] },
+      { id: '6-1', name: 'Planks', sets: [{ reps: 12 }] },
+      { id: '6-2', name: 'Russian Twists', sets: [{ reps: 12 }] },
+      { id: '6-3', name: 'Mountain Climbers', sets: [{ reps: 12 }] },
+      { id: '6-4', name: 'Leg Raises', sets: [{ reps: 12 }] },
     ]
   },
   {
@@ -78,10 +78,10 @@ const defaultWorkouts = [
     name: 'Recovery',
     day: 'Sunday',
     exercises: [
-      { id: '7-1', name: 'Stretching', sets: [{ reps: 12, weight: 0 }] },
-      { id: '7-2', name: 'Yoga', sets: [{ reps: 12, weight: 0 }] },
-      { id: '7-3', name: 'Foam Rolling', sets: [{ reps: 12, weight: 0 }] },
-      { id: '7-4', name: 'Light Walking', sets: [{ reps: 12, weight: 0 }] },
+      { id: '7-1', name: 'Stretching', sets: [{ reps: 12 }] },
+      { id: '7-2', name: 'Yoga', sets: [{ reps: 12 }] },
+      { id: '7-3', name: 'Foam Rolling', sets: [{ reps: 12 }] },
+      { id: '7-4', name: 'Light Walking', sets: [{ reps: 12 }] },
     ]
   }
 ]
@@ -89,7 +89,6 @@ const defaultWorkouts = [
 export default function WorkoutPage() {
   const { workouts, setWorkouts } = useWorkout()
   const [newWorkoutName, setNewWorkoutName] = useState('')
-  const [showDaySelector, setShowDaySelector] = useState<string | null>(null)
   
   // Initialize collapsedWorkouts with all workout IDs
   const [collapsedWorkouts, setCollapsedWorkouts] = useState<Set<string>>(() => {
@@ -123,7 +122,6 @@ export default function WorkoutPage() {
     setWorkouts(workouts.map(workout => 
       workout.id === workoutId ? { ...workout, day } : workout
     ))
-    setShowDaySelector(null)
   }
 
   const addExercise = (workoutId: string, exerciseName: string) => {
@@ -136,7 +134,7 @@ export default function WorkoutPage() {
             {
               id: Date.now().toString(),
               name: exerciseName,
-              sets: [{ reps: 12, weight: 0 }]
+              sets: [{ reps: 12 }]
             }
           ]
         }
@@ -190,7 +188,7 @@ export default function WorkoutPage() {
             if (exercise.id === exerciseId) {
               return {
                 ...exercise,
-                sets: [...exercise.sets, { reps: 12, weight: 0 }]
+                sets: [...exercise.sets, { reps: 12 }]
               }
             }
             return exercise
@@ -245,11 +243,11 @@ export default function WorkoutPage() {
           <div className="space-y-4">
             {workouts.map(workout => (
               <div key={workout.id}>
-                <div className="bg-[#FFEAD9] rounded-lg p-4">
-                  <div className="flex justify-between items-center">
+                <div className="bg-[#fff] rounded-lg">
+                  <div onClick={() => toggleWorkout(workout.id)} className="flex justify-between items-center bg-[#FFEAD9] rounded-lg p-2 mb-2">
                     <h3 className="text-[#1E0C02] font-bold">{workout.name}</h3>
                     <button 
-                      onClick={() => toggleWorkout(workout.id)}
+                      
                       className="p-1"
                     >
                       <ChevronDown 
@@ -263,48 +261,44 @@ export default function WorkoutPage() {
 
                   {!collapsedWorkouts.has(workout.id) && (
                     <>
+                    <div className="border border-[#EAEBEB] rounded-lg p-2">
                       {/* Day Selector */}
-                      <div className="relative mt-4">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-black text-sm">Day</span>
-                          <button 
-                            className="bg-[#EAEBEB] px-4 py-2 rounded flex items-center space-x-2"
-                            onClick={() => setShowDaySelector(workout.id)}
-                          >
-                            <span className="text-[#5F6666]">{workout.day}</span>
-                            <ChevronDown size={16} className="text-[#5F6666]" />
-                          </button>
+                      <div className="mb-4">
+                        <span className="text-black text-sm mb-2 block">Day</span>
+                        <div className="flex flex-wrap gap-2">
+                          {days.map(day => (
+                            <button
+                              key={day}
+                              onClick={() => updateWorkoutDay(workout.id, day)}
+                              className={`px-3 py-1.5 rounded-full text-sm ${
+                                workout.day === day 
+                                  ? 'bg-[#F2600C] text-white' 
+                                  : 'bg-[#EAEBEB] text-[#5F6666]'
+                              }`}
+                            >
+                              {day.slice(0, 3)}
+                            </button>
+                          ))}
                         </div>
-
-                        {showDaySelector === workout.id && (
-                          <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg p-2 z-10">
-                            {days.map(day => (
-                              <button
-                                key={day}
-                                className="block w-full text-left px-4 py-2 hover:bg-[#EAEBEB] rounded"
-                                onClick={() => updateWorkoutDay(workout.id, day)}
-                              >
-                                {day}
-                              </button>
-                            ))}
-                          </div>
-                        )}
                       </div>
 
                       {/* Exercises */}
                       {workout.exercises.map(exercise => (
-                        <div key={exercise.id} className="mb-2">
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="text"
-                              value={exercise.name}
-                              onChange={(e) => updateExerciseName(workout.id, exercise.id, e.target.value)}
-                              className="text-[10px] font-semibold leading-[120%] tracking-[0.02em] text-black w-24 bg-transparent"
-                            />
-                            <div className="flex-1 flex items-center space-x-2">
+                        <div key={exercise.id} className="mb-4">
+                          <input
+                            type="text"
+                            value={exercise.name}
+                            onChange={(e) => updateExerciseName(workout.id, exercise.id, e.target.value)}
+                            className="text-[12px] font-semibold leading-[120%] tracking-[0.02em] text-black w-full mb-2 bg-transparent"
+                          />
+                          <div className="flex flex-wrap gap-2 items-center">
+                            <div className="flex-1 flex flex-wrap gap-2">
                               {exercise.sets.map((set, index) => (
-                                <div key={index} className="bg-[#EAEBEB] px-4 py-2 rounded text-[#5F6666] text-sm flex items-center">
-                                  <span className="mr-1">REPS</span>
+                                <div 
+                                  key={index} 
+                                  className="bg-[#EAEBEB] px-3 py-1.5 rounded-lg text-[#5F6666] text-sm flex items-center min-w-[120px]"
+                                >
+                                  <span className="mr-2 text-[10px] uppercase tracking-wider">Set {index + 1}</span>
                                   <input
                                     type="number"
                                     value={set.reps}
@@ -315,15 +309,36 @@ export default function WorkoutPage() {
                                     className="w-12 bg-transparent text-center"
                                     min="0"
                                   />
+                                  <span className="ml-1 text-[10px] uppercase tracking-wider">reps</span>
                                 </div>
                               ))}
                             </div>
-                            <button onClick={() => addSet(workout.id, exercise.id)}>
-                              <Plus size={16} className="text-black" />
-                            </button>
-                            <button onClick={() => exercise.sets.length > 1 && removeSet(workout.id, exercise.id, exercise.sets.length - 1)}>
-                              <Minus size={16} className="text-black" />
-                            </button>
+                            <div className="flex gap-1">
+                              <button 
+                                onClick={() => addSet(workout.id, exercise.id)}
+                                className="p-2 hover:bg-[#EAEBEB] rounded-full transition-colors"
+                              >
+                                <Plus size={16} className="text-[#F2600C]" />
+                              </button>
+                              <button 
+                                onClick={() => {
+                                  if (exercise.sets.length === 1) {
+                                    // Delete the exercise if it's the last set
+                                    setWorkouts(workouts.map(w => 
+                                      w.id === workout.id 
+                                        ? { ...w, exercises: w.exercises.filter(e => e.id !== exercise.id) }
+                                        : w
+                                    ))
+                                  } else {
+                                    // Remove the last set
+                                    removeSet(workout.id, exercise.id, exercise.sets.length - 1)
+                                  }
+                                }}
+                                className="p-2 hover:bg-[#EAEBEB] rounded-full transition-colors"
+                              >
+                                <Minus size={16} className="text-[#5F6666]" />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -332,8 +347,8 @@ export default function WorkoutPage() {
                       <div className="mt-4 flex items-center space-x-2">
                         <input
                           type="text"
-                          placeholder="NEW WORKOUT"
-                          className="flex-1 bg-[#EAEBEB] text-[#5F6666] px-4 py-2 rounded"
+                          placeholder="Add new exercise"
+                          className="flex-1 bg-[#EAEBEB] text-[#5F6666] px-4 py-2 rounded-lg text-sm"
                           onKeyDown={(e) => {
                             if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                               addExercise(workout.id, e.currentTarget.value.trim())
@@ -349,11 +364,12 @@ export default function WorkoutPage() {
                               input.value = ''
                             }
                           }}
-                          className="p-2"
+                          className="p-2 hover:bg-[#EAEBEB] rounded-full transition-colors"
                         >
-                          <Plus size={16} className="text-black" />
+                          <Plus size={16} className="text-[#F2600C]" />
                         </button>
                       </div>
+                    </div>
                     </>
                   )}
                 </div>

@@ -1,36 +1,49 @@
 "use client"
 
-import React from 'react'
 import { useState } from 'react'
 import { Plus, Minus, ChevronDown } from 'lucide-react'
 import { useWorkout } from '@/context/WorkoutContext'
 
-interface WorkoutProps {
-  weight?: string
+interface Exercise {
+  id: string
+  name: string
+  sets: Array<{
+    reps: number
+  }>
 }
 
-export default function Workout({ weight }: WorkoutProps) {
-  const { workouts, selectedDay, setSelectedDay, setWorkouts } = useWorkout()
+interface WorkoutProps {
+  weight?: string
+  name?: string
+  exercises?: Exercise[]
+  day: string
+}
+
+export default function Workout({ weight, name, exercises, day }: WorkoutProps) {
+  const { workouts, setWorkouts } = useWorkout()
   const [showDaySelector, setShowDaySelector] = useState(false)
   const [cardioExercises, setCardioExercises] = useState<Array<{name: string, minutes: number}>>([
     { name: '', minutes: 0 }
   ])
 
-  // Find today's workout based on selectedDay
-  const todayWorkout = workouts.find(workout => workout.day === selectedDay)
+  const todayWorkout = workouts.find(workout => workout.day === day) || {
+    name: name || '',
+    exercises: exercises || [],
+    day: day
+  }
 
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const days = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
   const addSet = (exerciseId: string) => {
     setWorkouts(workouts.map(workout => {
-      if (workout.day === selectedDay) {
+      if (workout.day === todayWorkout.day) {
         return {
           ...workout,
           exercises: workout.exercises.map(exercise => {
             if (exercise.id === exerciseId) {
               return {
                 ...exercise,
-                sets: [...exercise.sets, { reps: 12, weight: 0 }]
+                sets: [...exercise.sets, { reps: 12 }]
               }
             }
             return exercise
@@ -43,7 +56,7 @@ export default function Workout({ weight }: WorkoutProps) {
 
   const removeSet = (exerciseId: string) => {
     setWorkouts(workouts.map(workout => {
-      if (workout.day === selectedDay) {
+      if (workout.day === todayWorkout.day) {
         return {
           ...workout,
           exercises: workout.exercises.map(exercise => {
@@ -62,24 +75,24 @@ export default function Workout({ weight }: WorkoutProps) {
   }
 
   const updateCardioName = (index: number, name: string) => {
-    const newCardio = [...cardioExercises];
-    newCardio[index].name = name;
-    setCardioExercises(newCardio);
-  };
+    const newCardio = [...cardioExercises]
+    newCardio[index].name = name
+    setCardioExercises(newCardio)
+  }
 
   const updateCardioMinutes = (index: number, minutes: number) => {
-    const newCardio = [...cardioExercises];
-    newCardio[index].minutes = minutes;
-    setCardioExercises(newCardio);
-  };
+    const newCardio = [...cardioExercises]
+    newCardio[index].minutes = minutes
+    setCardioExercises(newCardio)
+  }
 
   const addCardio = () => {
-    setCardioExercises([...cardioExercises, { name: '', minutes: 0 }]);
-  };
+    setCardioExercises([...cardioExercises, { name: '', minutes: 0 }])
+  }
 
   const removeCardio = (index: number) => {
-    setCardioExercises(cardioExercises.filter((_, i) => i !== index));
-  };
+    setCardioExercises(cardioExercises.filter((_, i) => i !== index))
+  }
 
   if (!todayWorkout) {
     return (
@@ -128,8 +141,13 @@ export default function Workout({ weight }: WorkoutProps) {
                         key={day}
                         className="w-full text-left px-4 py-2 hover:bg-[#EAEBEB] text-sm"
                         onClick={() => {
-                          setSelectedDay(day)
-                          setShowDaySelector(false)
+                          if (day && todayWorkout.day) {
+                            setWorkouts(workouts.map(w => 
+                              w.day === day ? { ...w, day: todayWorkout.day } : 
+                              w.day === todayWorkout.day ? { ...w, day } : w
+                            ))
+                            setShowDaySelector(false)
+                          }
                         }}
                       >
                         {workout ? `${day} - ${workout.name}` : day}
@@ -152,7 +170,7 @@ export default function Workout({ weight }: WorkoutProps) {
                   <div className="flex-1 flex flex-wrap gap-2">
                     {exercise.sets.map((set, setIndex) => (
                       <div key={setIndex} className="bg-[#EAEBEB] rounded px-4 py-2 text-[#5F6666] text-[10px] font-semibold leading-[120%] tracking-[0.08em] uppercase">
-                        {set.weight}KG x {set.reps}
+                        {set.reps} REPS
                       </div>
                     ))}
                   </div>

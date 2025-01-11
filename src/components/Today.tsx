@@ -6,7 +6,7 @@ import { useState } from 'react'
 export default function Today() {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   return (
-    <div className="mb-4">
+    <div className="mb-4 relative">
       <div className="h-[90px] bg-[#FCFCFC] border-2 border-[#FCFBFB] rounded-lg flex p-[10px]">
         <div className="flex-grow flex gap-2 items-center">
           <div className="flex items-center gap-2">
@@ -15,8 +15,8 @@ export default function Today() {
             </div>
             
             <div className="flex flex-col cursor-pointer" onClick={() => setIsCalendarOpen(!isCalendarOpen)}>
-              <h2 className="text-[#1E0C02] text-[34px] font-bold leading-[40px]">Saturday</h2>
-              <span className="text-[#1E0C02] text-lg leading-[28px]">Sep / 24</span>
+              <h2 className="text-[#1E0C02] text-[34px] font-bold leading-[40px]">{new Date().toLocaleDateString('en-US', { weekday: 'long' })}</h2>
+              <span className="text-[#1E0C02] text-lg leading-[28px]">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} / {new Date().getFullYear()}</span>
             </div>
           </div>
           
