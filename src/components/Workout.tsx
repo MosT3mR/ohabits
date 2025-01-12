@@ -25,7 +25,7 @@ interface WorkoutLog {
 }
 
 export default function Workout() {
-  const { workouts, logWorkout, getTodayWorkout } = useWorkout()
+  const { workouts, logWorkout, getWorkoutForDate } = useWorkout()
   const { selectedDate, formattedDate } = useSelectedDate()
   const [selectedWorkout, setSelectedWorkout] = useState<typeof workouts[0] | null>(null)
   const [showWorkoutSelector, setShowWorkoutSelector] = useState(false)
@@ -48,14 +48,14 @@ export default function Workout() {
   useEffect(() => {
     const loadWorkout = async () => {
       try {
-        const todayLog = await getTodayWorkout()
-        if (todayLog) {
-          const workout = workouts.find(w => w.id === todayLog.workout_id)
+        const workoutLog = await getWorkoutForDate(formattedDate)
+        if (workoutLog) {
+          const workout = workouts.find(w => w.id === workoutLog.workout_id)
           if (workout) {
             setSelectedWorkout(workout)
-            setCompletedExercises(todayLog.completed_exercises)
-            setCardioExercises(todayLog.cardio)
-            setWeight(todayLog.weight)
+            setCompletedExercises(workoutLog.completed_exercises)
+            setCardioExercises(workoutLog.cardio)
+            setWeight(workoutLog.weight)
           }
         } else {
           // If no workout logged, set the suggested workout for the day
@@ -81,7 +81,7 @@ export default function Workout() {
     if (workouts.length > 0) {
       loadWorkout()
     }
-  }, [workouts, day, getTodayWorkout, formattedDate])
+  }, [workouts, day, getWorkoutForDate, formattedDate])
 
   const updateSet = (exerciseIndex: number, setIndex: number, field: 'reps' | 'weight', value: number) => {
     const newExercises = [...completedExercises]

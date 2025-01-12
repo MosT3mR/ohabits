@@ -32,7 +32,7 @@ interface WorkoutLog {
 interface WorkoutContextType {
   workouts: Workout[]
   logWorkout: (log: WorkoutLog) => Promise<void>
-  getTodayWorkout: () => Promise<WorkoutLog | null>
+  getWorkoutForDate: (date: string) => Promise<WorkoutLog | null>
   updateWorkout: (id: string, workout: Partial<Workout>) => Promise<void>
   deleteWorkout: (id: string) => Promise<void>
   saveWorkout: (workout: Omit<Workout, 'id'>) => Promise<Workout | null>
@@ -41,7 +41,7 @@ interface WorkoutContextType {
 const WorkoutContext = createContext<WorkoutContextType>({
   workouts: [],
   logWorkout: async () => {},
-  getTodayWorkout: async () => null,
+  getWorkoutForDate: async () => null,
   updateWorkout: async () => {},
   deleteWorkout: async () => {},
   saveWorkout: async () => null,
@@ -105,22 +105,21 @@ export function WorkoutProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const getTodayWorkout = async () => {
+  const getWorkoutForDate = async (date: string) => {
     if (!user) return null
 
-    const today = new Date().toISOString().split('T')[0]
     const { data, error } = await supabase
       .from('workout_logs')
       .select('*')
       .eq('user_id', user.id)
-      .eq('date', today)
+      .eq('date', date)
       .single()
 
     if (error) {
       if (error.code === 'PGRST116') { // no rows found
         return null
       }
-      console.error('Error fetching today\'s workout:', error)
+      console.error('Error fetching workout for date:', error)
       throw error
     }
 
@@ -208,7 +207,7 @@ export function WorkoutProvider({ children }: { children: React.ReactNode }) {
     <WorkoutContext.Provider value={{ 
       workouts, 
       logWorkout, 
-      getTodayWorkout,
+      getWorkoutForDate,
       updateWorkout,
       deleteWorkout,
       saveWorkout
