@@ -96,7 +96,7 @@ export default function Notes() {
     <div className="bg-[#FCFCFC] rounded-lg border-2 border-[#FCFBFB] p-4 mt-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-[#1E0C02] text-[23px] font-bold">
-          {isToday ? "Daily Notes" : `Notes for ${selectedDate.toLocaleDateString()}`}
+          {isToday ? "Daily Notes" : `Notes for ${selectedDate.toLocaleDateString('en-GB', {day: '2-digit',month: '2-digit',year: 'numeric'}).split('/').join(' / ')}`}
         </h2>
         {hasExistingNote && !isEditing && (
           <button

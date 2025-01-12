@@ -111,7 +111,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="space-y-1">
+          {/* <div className="space-y-1">
             <button 
               type="button"
               className="w-full flex items-center justify-center gap-2 py-3 border border-[#EAEBEB] rounded"
@@ -119,7 +119,7 @@ export default function LoginPage() {
               <Image src="/svg/google.svg" alt="Google" width={20} height={20} className="text-[#181919]" />
               <span className="font-semibold text-[18px] leading-[120%] text-center text-[#181919]">Sign In with Google</span>
             </button>
-          </div>
+          </div> */}
 
           <div className="text-center space-y-4">
             <Link 

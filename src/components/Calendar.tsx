@@ -1,13 +1,32 @@
 "use client"
 
 import { useSelectedDate } from '@/context/SelectedDateContext'
+import { useEffect, useRef } from 'react'
 
 export interface CalendarProps {
   isOpen?: boolean
+  onClose?: () => void
 }
 
-export default function Calendar({ isOpen = false }: CalendarProps) {
+export default function Calendar({ isOpen = false, onClose }: CalendarProps) {
   const { selectedDate, setSelectedDate } = useSelectedDate()
+  const calendarRef = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+        onClose?.()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen, onClose])
   
   if (!isOpen) return null
 
@@ -40,10 +59,11 @@ export default function Calendar({ isOpen = false }: CalendarProps) {
     if (day === null) return
     const newDate = new Date(currentYear, currentMonth, day)
     setSelectedDate(newDate)
+    onClose?.()
   }
 
   return (
-    <div className="absolute z-50 left-0 right-0 mt-2 bg-[#FCFCFC] rounded-lg shadow-lg p-4 border-2 border-[#FCFBFB]">
+    <div ref={calendarRef} className="absolute z-50 left-0 right-0 mt-2 bg-[#FCFCFC] rounded-lg shadow-lg p-4 border-2 border-[#FCFBFB]">
       <div className="text-center mb-4">
         <h2 className="text-[#1E0C02] font-semibold">
           {monthName} {currentYear}

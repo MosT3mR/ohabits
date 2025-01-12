@@ -84,7 +84,7 @@ export default function MoodRating() {
   return (
     <div className="mt-8">
       <h2 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center">
-        {isToday ? "How is the day" : `Mood for ${selectedDate.toLocaleDateString()}`}
+        {isToday ? "How is the day" : `Mood for ${selectedDate.toLocaleDateString('en-GB', {day: '2-digit',month: '2-digit',year: 'numeric'}).split('/').join(' / ')}`}
       </h2>
       <div className="flex flex-col gap-2 items-center">
         <div className="flex gap-5 items-center justify-center">

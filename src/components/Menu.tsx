@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Home, LayoutGrid, Hash, Dumbbell, User, Settings, Instagram, Twitter, Github } from 'lucide-react'
+import { Home, LayoutGrid, Hash, Dumbbell, User, Instagram, Twitter, Github } from 'lucide-react'
 
 interface MenuProps {
   isOpen: boolean
@@ -64,10 +64,10 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
             <span className="text-[34px] font-bold leading-[118%] tracking-[-0.04em] text-black">Profile page</span>
           </Link>
           
-          <Link href="/settings" onClick={onClose} className="flex items-center space-x-4">
+          {/* <Link href="/settings" onClick={onClose} className="flex items-center space-x-4">
             <Settings size={32} className="text-black" />
             <span className="text-[34px] font-bold leading-[118%] tracking-[-0.04em] text-black">Settings</span>
-          </Link>
+          </Link> */}
         </nav>
 
         <div className="mt-6">

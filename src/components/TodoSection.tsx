@@ -107,7 +107,7 @@ export default function TodoSection() {
   return (
     <div className="space-y-4 pb-7">
       <h3 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center pt-4">
-        {isToday ? "Today's Tasks" : `Tasks for ${selectedDate.toLocaleDateString()}`}
+        {isToday ? "Today's Tasks" : `Tasks for ${selectedDate.toLocaleDateString('en-GB', {day: '2-digit',month: '2-digit',year: 'numeric'}).split('/').join(' / ')}`}
       </h3>
       <div className="space-y-2">
         {todos.map(todo => (

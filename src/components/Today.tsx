@@ -31,7 +31,7 @@ export default function Today() {
           </div>
         </div>
       </div>
-      <Calendar isOpen={isCalendarOpen} />
+      <Calendar isOpen={isCalendarOpen} onClose={() => setIsCalendarOpen(false)} />
     </div>
   )
 } 

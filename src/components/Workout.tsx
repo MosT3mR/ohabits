@@ -196,6 +196,9 @@ export default function Workout() {
         {/* Header with Workout Selector */}
         <div>
           <div className="relative mb-4">
+            <h3 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center">
+              {isToday ? "Cardio" : `Workout for ${selectedDate.toLocaleDateString('en-GB', {day: '2-digit',month: '2-digit',year: 'numeric'}).split('/').join(' / ')}`}
+            </h3>
             <button 
               onClick={() => setShowWorkoutSelector(!showWorkoutSelector)}
               className="w-full flex items-center justify-between bg-[#EAEBEB] rounded px-4 py-2"
@@ -336,9 +339,6 @@ export default function Workout() {
 
             {/* Cardio Section */}
             <div className="space-y-4">
-              <h3 className="text-[#1E0C02] text-xl">
-                {isToday ? "Cardio" : `Cardio for ${selectedDate.toLocaleDateString()}`}
-              </h3>
               <div className="flex flex-col space-y-3">
                 {cardioExercises.map((cardio, index) => (
                   <div key={index} className="flex items-center space-x-2">
