@@ -1,15 +1,18 @@
 "use client"
 
+import { useSelectedDate } from '@/context/SelectedDateContext'
+
 export interface CalendarProps {
   isOpen?: boolean
 }
 
 export default function Calendar({ isOpen = false }: CalendarProps) {
+  const { selectedDate, setSelectedDate } = useSelectedDate()
+  
   if (!isOpen) return null
 
-  const currentDate = new Date()
-  const currentMonth = currentDate.getMonth()
-  const currentYear = currentDate.getFullYear()
+  const currentMonth = selectedDate.getMonth()
+  const currentYear = selectedDate.getFullYear()
   
   // Get first day of the month (0 = Sunday, 1 = Monday, etc.)
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
@@ -27,10 +30,17 @@ export default function Calendar({ isOpen = false }: CalendarProps) {
   const allDays = [...blanks, ...days]
   
   const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-  const today = currentDate.getDate()
+  const today = new Date().getDate()
+  const selectedDay = selectedDate.getDate()
   
   // Get month name
-  const monthName = currentDate.toLocaleString('default', { month: 'long' })
+  const monthName = selectedDate.toLocaleString('default', { month: 'long' })
+
+  const handleDateSelect = (day: number | null) => {
+    if (day === null) return
+    const newDate = new Date(currentYear, currentMonth, day)
+    setSelectedDate(newDate)
+  }
 
   return (
     <div className="absolute z-50 left-0 right-0 mt-2 bg-[#FCFCFC] rounded-lg shadow-lg p-4 border-2 border-[#FCFBFB]">
@@ -51,13 +61,16 @@ export default function Calendar({ isOpen = false }: CalendarProps) {
         {allDays.map((day, index) => (
           <div
             key={index}
+            onClick={() => handleDateSelect(day)}
             className={`text-center p-2 rounded-full ${
               day === null 
                 ? '' 
                 : 'cursor-pointer text-sm ' + (
-                    day === today 
+                    day === selectedDay
                       ? 'bg-[#F2600C] text-white font-semibold' 
-                      : 'hover:bg-[#FEF7F3] text-[#1E0C02]'
+                      : day === today 
+                        ? 'bg-[#FEF7F3] text-[#1E0C02] font-semibold'
+                        : 'hover:bg-[#FEF7F3] text-[#1E0C02]'
                   )
             }`}
           >

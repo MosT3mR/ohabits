@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSupabase } from '@/providers/SupabaseProvider'
+import { useSelectedDate } from '@/context/SelectedDateContext'
 
 interface MoodRating {
   id: string
@@ -14,10 +15,14 @@ export default function MoodRating() {
   const [rating, setRating] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const { supabase, user } = useSupabase()
+  const { selectedDate, formattedDate } = useSelectedDate()
+  const today = new Date()
+  const isToday = formattedDate === new Date(
+    today.getTime() - (today.getTimezoneOffset() * 60000)
+  ).toISOString().split('T')[0]
   const numbers = Array.from({length: 10}, (_, i) => i + 1)
-  const today = new Date().toISOString().split('T')[0]
 
-  // Fetch today's mood rating
+  // Fetch mood rating for selected date
   useEffect(() => {
     const fetchMoodRating = async () => {
       if (!user) {
@@ -30,13 +35,15 @@ export default function MoodRating() {
           .from('mood_ratings')
           .select('rating')
           .eq('user_id', user.id)
-          .eq('date', today)
+          .eq('date', formattedDate)
           .single()
 
         if (error && error.code !== 'PGRST116') throw error // PGRST116 is "no rows returned"
 
         if (data) {
           setRating(data.rating)
+        } else {
+          setRating(null)
         }
       } catch (error) {
         console.error('Error fetching mood rating:', error)
@@ -46,7 +53,7 @@ export default function MoodRating() {
     }
 
     fetchMoodRating()
-  }, [supabase, user, today])
+  }, [supabase, user, formattedDate])
 
   const handleRatingClick = async (num: number) => {
     if (!user) return
@@ -56,8 +63,10 @@ export default function MoodRating() {
         .from('mood_ratings')
         .upsert({
           rating: num,
-          date: today,
+          date: formattedDate,
           user_id: user.id
+        }, {
+          onConflict: 'user_id,date'
         })
 
       if (error) throw error
@@ -74,7 +83,9 @@ export default function MoodRating() {
 
   return (
     <div className="mt-8">
-      <h2 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center">How is the day</h2>
+      <h2 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center">
+        {isToday ? "How is the day" : `Mood for ${selectedDate.toLocaleDateString()}`}
+      </h2>
       <div className="flex flex-col gap-2 items-center">
         <div className="flex gap-5 items-center justify-center">
           {numbers.map((num) => (

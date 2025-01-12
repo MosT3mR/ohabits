@@ -6,8 +6,6 @@ import Today from '@/components/Today'
 import Notes from '@/components/Notes'
 
 export default function Home() {
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
-
   return (
     <div className="min-h-screen bg-[#FEF7F3] p-4">
       <div className="max-w-[395px] mx-auto space-y-4">
@@ -18,7 +16,7 @@ export default function Home() {
           <Notes />
           <MoodRating />
         </div>
-        <Workout day={today} />
+        <Workout />
       </div>
     </div>
   )

@@ -1,21 +1,29 @@
 "use client"
 
 import { useHabits } from '@/context/HabitsContext'
+import { useSelectedDate } from '@/context/SelectedDateContext'
 import Link from 'next/link'
 
 export default function MainPageHabits() {
   const { habits, toggleHabit } = useHabits()
-  const today = new Date().getDay()
-  const dayIndex = today === 0 ? 6 : today - 1
+  const { selectedDate, formattedDate } = useSelectedDate()
+  const dayIndex = selectedDate.getDay()
+  const adjustedDayIndex = dayIndex === 0 ? 6 : dayIndex - 1
+  const today = new Date()
+  const isToday = formattedDate === new Date(
+    today.getTime() - (today.getTimezoneOffset() * 60000)
+  ).toISOString().split('T')[0]
 
-  const todaysHabits = habits.filter(habit => habit.scheduledDays[dayIndex])
+  const scheduledHabits = habits.filter(habit => habit.scheduledDays[adjustedDayIndex])
 
   return (
     <div className="space-y-4 pb-7 border-b border-[#EAEBEB]">
-      <h3 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center">Habits</h3>
-      {todaysHabits.length > 0 ? (
+      <h3 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center">
+        {isToday ? "Habits" : `Habits for ${selectedDate.toLocaleDateString()}`}
+      </h3>
+      {scheduledHabits.length > 0 ? (
         <div className="space-y-2">
-          {todaysHabits.map(habit => (
+          {scheduledHabits.map(habit => (
             <button
               key={habit.id}
               onClick={() => toggleHabit(habit.id)}
@@ -32,7 +40,7 @@ export default function MainPageHabits() {
         </div>
       ) : (
         <div className="text-center py-4 text-gray-500">
-          <p>No habits scheduled for today.</p>
+          <p>No habits scheduled for this day.</p>
           <Link href="/habits" className="text-[#F2600C] hover:underline mt-2 inline-block">
             Add habits from the menu
           </Link>

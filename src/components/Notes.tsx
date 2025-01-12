@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Save, Edit2 } from 'lucide-react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useAuth } from '@/context/AuthContext'
+import { useSelectedDate } from '@/context/SelectedDateContext'
 
 export default function Notes() {
   const [note, setNote] = useState('')
@@ -12,21 +13,25 @@ export default function Notes() {
   const [hasExistingNote, setHasExistingNote] = useState(false)
   const supabase = createClientComponentClient()
   const { user } = useAuth()
+  const { selectedDate, formattedDate } = useSelectedDate()
+  const today = new Date()
+  const isToday = formattedDate === new Date(
+    today.getTime() - (today.getTimezoneOffset() * 60000)
+  ).toISOString().split('T')[0]
 
   useEffect(() => {
     if (user) {
-      fetchTodayNote()
+      fetchNote()
     }
-  }, [user])
+  }, [user, formattedDate])
 
-  const fetchTodayNote = async () => {
+  const fetchNote = async () => {
     try {
-      const today = new Date().toISOString().split('T')[0]
       const { data, error } = await supabase
         .from('notes')
         .select('content')
         .eq('user_id', user?.id)
-        .eq('date', today)
+        .eq('date', formattedDate)
         .single()
 
       if (error && error.code !== 'PGRST116') {
@@ -39,6 +44,7 @@ export default function Notes() {
         setIsEditing(false)
         setHasExistingNote(true)
       } else {
+        setNote('')
         setIsEditing(true)
         setHasExistingNote(false)
       }
@@ -53,12 +59,11 @@ export default function Notes() {
     if (!user) return
 
     try {
-      const today = new Date().toISOString().split('T')[0]
       const { error } = await supabase
         .from('notes')
         .upsert({
           user_id: user.id,
-          date: today,
+          date: formattedDate,
           content: note.trim(),
           updated_at: new Date().toISOString()
         }, {
@@ -90,7 +95,9 @@ export default function Notes() {
   return (
     <div className="bg-[#FCFCFC] rounded-lg border-2 border-[#FCFBFB] p-4 mt-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[#1E0C02] text-[23px] font-bold">Daily Notes</h2>
+        <h2 className="text-[#1E0C02] text-[23px] font-bold">
+          {isToday ? "Daily Notes" : `Notes for ${selectedDate.toLocaleDateString()}`}
+        </h2>
         {hasExistingNote && !isEditing && (
           <button
             onClick={() => setIsEditing(true)}
@@ -106,7 +113,7 @@ export default function Notes() {
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Write your daily note here..."
+            placeholder="Write your note here..."
             className="w-full h-32 bg-[#EAEBEB] rounded-lg p-4 text-[#5F6666] text-sm resize-none"
           />
           <button

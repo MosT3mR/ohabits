@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSupabase } from '@/providers/SupabaseProvider'
+import { useSelectedDate } from '@/context/SelectedDateContext'
 
 interface Todo {
   id: string
@@ -16,9 +17,13 @@ export default function TodoSection() {
   const [newTodo, setNewTodo] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const { supabase, user } = useSupabase()
-  const today = new Date().toISOString().split('T')[0]
+  const { selectedDate, formattedDate } = useSelectedDate()
+  const today = new Date()
+  const isToday = formattedDate === new Date(
+    today.getTime() - (today.getTimezoneOffset() * 60000)
+  ).toISOString().split('T')[0]
 
-  // Fetch today's todos
+  // Fetch todos for selected date
   useEffect(() => {
     const fetchTodos = async () => {
       if (!user) {
@@ -31,7 +36,7 @@ export default function TodoSection() {
           .from('todos')
           .select('*')
           .eq('user_id', user.id)
-          .eq('date', today)
+          .eq('date', formattedDate)
 
         if (error) throw error
 
@@ -44,7 +49,7 @@ export default function TodoSection() {
     }
 
     fetchTodos()
-  }, [supabase, user, today])
+  }, [supabase, user, formattedDate])
 
   const handleAddTodo = async () => {
     if (!newTodo.trim() || !user) return
@@ -55,7 +60,7 @@ export default function TodoSection() {
         .insert([{
           text: newTodo,
           completed: false,
-          date: today,
+          date: formattedDate,
           user_id: user.id
         }])
         .select()
@@ -101,7 +106,9 @@ export default function TodoSection() {
 
   return (
     <div className="space-y-4 pb-7">
-      <h3 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center pt-4">Today&apos;s Tasks</h3>
+      <h3 className="text-[#1E0C02] text-[23px] font-bold leading-[122%] tracking-[-0.02em] mb-4 text-center pt-4">
+        {isToday ? "Today's Tasks" : `Tasks for ${selectedDate.toLocaleDateString()}`}
+      </h3>
       <div className="space-y-2">
         {todos.map(todo => (
           <button

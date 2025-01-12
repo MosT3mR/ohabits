@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header"
-import { HabitsProvider } from '@/context/HabitsContext'
 import { WorkoutProvider } from '@/context/WorkoutContext'
 import SupabaseProvider from '@/providers/SupabaseProvider'
 import { AuthProvider } from '@/context/AuthContext'
@@ -27,10 +25,7 @@ export default function RootLayout({
         <SupabaseProvider>
           <AuthProvider>
             <WorkoutProvider>
-              <HabitsProvider>
-                <Header />
-                <main>{children}</main>
-              </HabitsProvider>
+              {children}
             </WorkoutProvider>
           </AuthProvider>
         </SupabaseProvider>

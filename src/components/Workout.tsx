@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Plus, Minus, ChevronDown, Save, Edit2, Trash2 } from 'lucide-react'
 import { useWorkout } from '@/context/WorkoutContext'
+import { useSelectedDate } from '@/context/SelectedDateContext'
 
 interface Exercise {
   id: string
@@ -23,12 +24,9 @@ interface WorkoutLog {
   notes?: string
 }
 
-interface WorkoutProps {
-  day?: string
-}
-
-export default function Workout({ day = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase() }: WorkoutProps) {
+export default function Workout() {
   const { workouts, logWorkout, getTodayWorkout } = useWorkout()
+  const { selectedDate, formattedDate } = useSelectedDate()
   const [selectedWorkout, setSelectedWorkout] = useState<typeof workouts[0] | null>(null)
   const [showWorkoutSelector, setShowWorkoutSelector] = useState(false)
   const [weight, setWeight] = useState<string>('')
@@ -40,9 +38,15 @@ export default function Workout({ day = new Date().toLocaleDateString('en-US', {
   const [editingExerciseId, setEditingExerciseId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState('')
 
-  // Load today's workout log if it exists
+  const day = selectedDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+  const today = new Date()
+  const isToday = formattedDate === new Date(
+    today.getTime() - (today.getTimezoneOffset() * 60000)
+  ).toISOString().split('T')[0]
+
+  // Load workout log if it exists
   useEffect(() => {
-    const loadTodayWorkout = async () => {
+    const loadWorkout = async () => {
       try {
         const todayLog = await getTodayWorkout()
         if (todayLog) {
@@ -54,7 +58,7 @@ export default function Workout({ day = new Date().toLocaleDateString('en-US', {
             setWeight(todayLog.weight)
           }
         } else {
-          // If no workout logged today, set the suggested workout for the day
+          // If no workout logged, set the suggested workout for the day
           const suggestedWorkout = workouts.find(w => w.day.toLowerCase() === day)
           if (suggestedWorkout) {
             setSelectedWorkout(suggestedWorkout)
@@ -68,16 +72,16 @@ export default function Workout({ day = new Date().toLocaleDateString('en-US', {
           }
         }
       } catch (error) {
-        console.error('Error loading today\'s workout:', error)
+        console.error('Error loading workout:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
     if (workouts.length > 0) {
-      loadTodayWorkout()
+      loadWorkout()
     }
-  }, [workouts, day, getTodayWorkout])
+  }, [workouts, day, getTodayWorkout, formattedDate])
 
   const updateSet = (exerciseIndex: number, setIndex: number, field: 'reps' | 'weight', value: number) => {
     const newExercises = [...completedExercises]
@@ -129,7 +133,7 @@ export default function Workout({ day = new Date().toLocaleDateString('en-US', {
     }
 
     const workoutLog: WorkoutLog = {
-      date: new Date().toISOString().split('T')[0],
+      date: formattedDate,
       workout_id: selectedWorkout.id,
       completed_exercises: completedExercises,
       cardio: cardioExercises,
@@ -332,7 +336,9 @@ export default function Workout({ day = new Date().toLocaleDateString('en-US', {
 
             {/* Cardio Section */}
             <div className="space-y-4">
-              <h3 className="text-[#1E0C02] text-xl">Cardio</h3>
+              <h3 className="text-[#1E0C02] text-xl">
+                {isToday ? "Cardio" : `Cardio for ${selectedDate.toLocaleDateString()}`}
+              </h3>
               <div className="flex flex-col space-y-3">
                 {cardioExercises.map((cardio, index) => (
                   <div key={index} className="flex items-center space-x-2">

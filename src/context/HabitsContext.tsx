@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { useSupabase } from '@/providers/SupabaseProvider'
+import { useSelectedDate } from '@/context/SelectedDateContext'
 
 interface Habit {
   id: string
@@ -27,6 +28,7 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
   const [habits, setHabits] = useState<Habit[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { supabase, user } = useSupabase()
+  const { formattedDate } = useSelectedDate()
 
   const fetchHabits = useCallback(async () => {
     if (!user) {
@@ -46,12 +48,11 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
 
       const habitsData = habitsResponse.data || []
 
-      const today = new Date().toISOString().split('T')[0]
       const completionsResponse = await supabase
         .from('habit_completions')
         .select('*')
         .eq('user_id', user.id)
-        .eq('date', today)
+        .eq('date', formattedDate)
 
       if (completionsResponse.error) {
         throw new Error(`Failed to fetch completions: ${completionsResponse.error.message}`)
@@ -78,7 +79,7 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }, [supabase, user])
+  }, [supabase, user, formattedDate])
 
   useEffect(() => {
     fetchHabits()
@@ -124,7 +125,6 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
     if (!user) return
 
     try {
-      const today = new Date().toISOString().split('T')[0]
       const habit = habits.find(h => h.id === habitId)
       if (!habit) return
 
@@ -136,7 +136,9 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
           habit_id: habitId,
           user_id: user.id,
           completed: newCompletionStatus,
-          date: today
+          date: formattedDate
+        }, {
+          onConflict: 'user_id,habit_id,date'
         })
 
       if (error) {
