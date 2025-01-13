@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Plus, Minus, ChevronDown, Save, Edit2, Trash2 } from 'lucide-react'
 import { useWorkout } from '@/context/WorkoutContext'
 import { useSelectedDate } from '@/context/SelectedDateContext'
+import { useAuth } from '@/context/AuthContext'
 
 interface Exercise {
   id: string
@@ -24,19 +25,24 @@ interface WorkoutLog {
   notes?: string
 }
 
+interface CardioExercise {
+  name: string
+  minutes: number
+}
+
 export default function Workout() {
   const { workouts, logWorkout, getWorkoutForDate } = useWorkout()
   const { selectedDate, formattedDate } = useSelectedDate()
+  const { user } = useAuth()
   const [selectedWorkout, setSelectedWorkout] = useState<typeof workouts[0] | null>(null)
   const [showWorkoutSelector, setShowWorkoutSelector] = useState(false)
   const [weight, setWeight] = useState<string>('')
   const [completedExercises, setCompletedExercises] = useState<Exercise[]>([])
-  const [cardioExercises, setCardioExercises] = useState<Array<{name: string, minutes: number}>>([
-    { name: '', minutes: 0 }
-  ])
+  const [cardioExercises, setCardioExercises] = useState<CardioExercise[]>([{ name: '', minutes: 0 }])
   const [isLoading, setIsLoading] = useState(true)
   const [editingExerciseId, setEditingExerciseId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState('')
+  const [buttonState, setButtonState] = useState<'default' | 'success' | 'error'>('default')
 
   const day = selectedDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
   const today = new Date()
@@ -54,7 +60,12 @@ export default function Workout() {
           if (workout) {
             setSelectedWorkout(workout)
             setCompletedExercises(workoutLog.completed_exercises)
-            setCardioExercises(workoutLog.cardio)
+            // Only set cardio exercises if they exist and have valid entries
+            if (workoutLog.cardio && workoutLog.cardio.length > 0 && workoutLog.cardio.some(c => c.minutes > 0)) {
+              setCardioExercises(workoutLog.cardio)
+            } else {
+              setCardioExercises([{ name: '', minutes: 0 }])
+            }
             setWeight(workoutLog.weight)
           }
         } else {
@@ -126,27 +137,51 @@ export default function Workout() {
     setCardioExercises(cardioExercises.filter((_, i) => i !== index))
   }
 
-  const handleSubmit = async () => {
+  const handleSave = async () => {
+    if (!user) return
+
     if (!selectedWorkout || !weight) {
-      alert('Please select a workout and enter your weight')
+      setButtonState('error')
+      setTimeout(() => setButtonState('default'), 2000)
       return
     }
 
-    const workoutLog: WorkoutLog = {
-      date: formattedDate,
-      workout_id: selectedWorkout.id,
-      completed_exercises: completedExercises,
-      cardio: cardioExercises,
-      weight: weight,
-      notes: `Weight: ${weight}kg`
-    }
-
     try {
+      // Filter out cardio exercises with empty name or 0 minutes
+      const validCardioExercises = cardioExercises.filter(exercise => 
+        exercise.minutes > 0 && exercise.name.trim() !== ''
+      )
+
+      const workoutLog: WorkoutLog = {
+        workout_id: selectedWorkout.id,
+        completed_exercises: completedExercises,
+        cardio: validCardioExercises.length > 0 ? validCardioExercises : [],
+        weight: weight,
+        date: formattedDate
+      }
+
       await logWorkout(workoutLog)
-      alert('Workout logged successfully!')
+
+      // Reload the workout data to show the latest changes
+      const updatedWorkoutLog = await getWorkoutForDate(formattedDate)
+      if (updatedWorkoutLog) {
+        setCompletedExercises(updatedWorkoutLog.completed_exercises)
+        if (updatedWorkoutLog.cardio && updatedWorkoutLog.cardio.length > 0) {
+          setCardioExercises(updatedWorkoutLog.cardio)
+        } else {
+          setCardioExercises([{ name: '', minutes: 0 }])
+        }
+        setWeight(updatedWorkoutLog.weight)
+      }
+      
+      // Show success state
+      setButtonState('success')
+      setTimeout(() => setButtonState('default'), 2000)
     } catch (error) {
-      console.error('Error logging workout:', error)
-      alert('Failed to log workout')
+      console.error('Error saving workout:', error)
+      // Show error state
+      setButtonState('error')
+      setTimeout(() => setButtonState('default'), 2000)
     }
   }
 
@@ -179,6 +214,7 @@ export default function Workout() {
     setEditingExerciseId(null)
     setEditingName('')
   }
+
 
   if (isLoading) {
     return (
@@ -371,11 +407,22 @@ export default function Workout() {
 
             {/* Submit Button */}
             <button
-              onClick={handleSubmit}
-              className="w-full bg-[#F2600C] text-white py-3 rounded font-semibold flex items-center justify-center gap-2"
+              onClick={handleSave}
+              className={`w-full py-3 rounded font-semibold flex items-center justify-center gap-2 transition-colors duration-300 ${
+                buttonState === 'success' 
+                  ? 'bg-green-500 text-white' 
+                  : buttonState === 'error'
+                    ? 'bg-red-500 text-white'
+                    : 'bg-[#F2600C] text-white'
+              }`}
             >
               <Save size={20} />
-              Log Workout
+              {buttonState === 'success' 
+                ? 'Workout Saved!' 
+                : buttonState === 'error'
+                  ? 'Error Saving'
+                  : 'Save Workout'
+              }
             </button>
           </>
         ) : (

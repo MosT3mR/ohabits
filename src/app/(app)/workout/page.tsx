@@ -17,7 +17,8 @@ export default function WorkoutPage() {
   useEffect(() => {
     const allWorkoutIds = workouts.map(w => w.id)
     setCollapsedWorkouts(new Set(allWorkoutIds))
-  }, []) // Only run on mount, not on workouts change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally only run on mount to set initial collapsed state
 
   const addWorkout = async () => {
     if (!newWorkoutName.trim()) return
