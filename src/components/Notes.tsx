@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Save, Edit2 } from 'lucide-react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useAuth } from '@/context/AuthContext'
@@ -19,13 +19,7 @@ export default function Notes() {
     today.getTime() - (today.getTimezoneOffset() * 60000)
   ).toISOString().split('T')[0]
 
-  useEffect(() => {
-    if (user) {
-      fetchNote()
-    }
-  }, [user, formattedDate])
-
-  const fetchNote = async () => {
+  const fetchNote = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('notes')
@@ -53,7 +47,13 @@ export default function Notes() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [supabase, user?.id, formattedDate])
+
+  useEffect(() => {
+    if (user) {
+      fetchNote()
+    }
+  }, [user, formattedDate, fetchNote])
 
   const saveNote = async () => {
     if (!user) return

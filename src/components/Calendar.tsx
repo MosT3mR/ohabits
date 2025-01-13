@@ -6,9 +6,10 @@ import { useEffect, useRef } from 'react'
 export interface CalendarProps {
   isOpen?: boolean
   onClose?: () => void
+  onDateSelect?: (date: Date) => void
 }
 
-export default function Calendar({ isOpen = false, onClose }: CalendarProps) {
+export default function Calendar({ isOpen = false, onClose, onDateSelect }: CalendarProps) {
   const { selectedDate, setSelectedDate } = useSelectedDate()
   const calendarRef = useRef<HTMLDivElement>(null)
   
@@ -59,6 +60,7 @@ export default function Calendar({ isOpen = false, onClose }: CalendarProps) {
     if (day === null) return
     const newDate = new Date(currentYear, currentMonth, day)
     setSelectedDate(newDate)
+    onDateSelect?.(newDate)
     onClose?.()
   }
 

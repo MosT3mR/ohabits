@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 
@@ -11,12 +11,27 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [retryTimeout, setRetryTimeout] = useState<number>(0)
   
   const router = useRouter()
   const supabase = createClientComponentClient()
 
+  useEffect(() => {
+    if (retryTimeout > 0) {
+      const timer = setTimeout(() => {
+        setRetryTimeout(prev => prev - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [retryTimeout])
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (retryTimeout > 0) {
+      setError(`Too many attempts. Please wait ${retryTimeout} seconds before trying again.`)
+      return
+    }
+
     setError(null)
     setLoading(true)
 
@@ -26,7 +41,13 @@ export default function LoginPage() {
         password,
       })
 
-      if (supabaseError) throw supabaseError
+      if (supabaseError) {
+        if (supabaseError.message.includes('rate limit')) {
+          setRetryTimeout(30) // Set 30 seconds timeout
+          throw new Error('Too many login attempts. Please wait 30 seconds before trying again.')
+        }
+        throw supabaseError
+      }
 
       router.push('/')
       router.refresh()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useAuth } from '@/context/AuthContext'
 import { Save, Upload, User } from 'lucide-react'
@@ -15,13 +15,7 @@ export default function ProfilePage() {
   const supabase = createClientComponentClient()
   const { user } = useAuth()
 
-  useEffect(() => {
-    if (user) {
-      fetchProfile()
-    }
-  }, [user])
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       // Fetch profile data
       const { data: profile, error: profileError } = await supabase
@@ -47,7 +41,13 @@ export default function ProfilePage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [supabase, user])
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile()
+    }
+  }, [user, fetchProfile])
 
   const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {

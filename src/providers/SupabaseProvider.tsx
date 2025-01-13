@@ -18,10 +18,34 @@ export default function SupabaseProvider({ children }: { children: React.ReactNo
   const router = useRouter()
 
   useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) {
+          console.error('Error getting session:', error)
+          return
+        }
+        setUser(session?.user ?? null)
+      } catch (error) {
+        console.error('Error in getUser:', error)
+      }
+    }
+
+    // Get initial user
+    getUser()
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null)
+
+      if (event === 'SIGNED_OUT') {
+        // Clear any application state
+        router.push('/login')
+      } else if (event === 'SIGNED_IN') {
+        router.push('/')
+      }
+
       router.refresh()
     })
 

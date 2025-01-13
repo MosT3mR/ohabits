@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Menu from '../Menu'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -14,13 +14,7 @@ export default function Header() {
   const supabase = createClientComponentClient()
   const { user } = useAuth()
 
-  useEffect(() => {
-    if (user) {
-      fetchProfile()
-    }
-  }, [user])
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -40,7 +34,13 @@ export default function Header() {
     } catch (error) {
       console.error('Error:', error)
     }
-  }
+  }, [supabase, user?.id])
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile()
+    }
+  }, [user, fetchProfile])
 
   return (
     <>

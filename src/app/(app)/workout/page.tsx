@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Plus, ChevronDown, Minus, Edit2, Save, Trash2 } from 'lucide-react'
 import { useWorkout } from '@/context/WorkoutContext'
 
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'N/A']
 
 export default function WorkoutPage() {
   const { workouts, saveWorkout, deleteWorkout, updateWorkout } = useWorkout()
@@ -17,7 +17,7 @@ export default function WorkoutPage() {
   useEffect(() => {
     const allWorkoutIds = workouts.map(w => w.id)
     setCollapsedWorkouts(new Set(allWorkoutIds))
-  }, []) // Only run once on mount
+  }, []) // Only run on mount, not on workouts change
 
   const addWorkout = async () => {
     if (!newWorkoutName.trim()) return
@@ -40,25 +40,12 @@ export default function WorkoutPage() {
   }
 
   const updateWorkoutDay = async (workoutId: string, day: string) => {
-    // Ensure workout stays expanded during update
-    setCollapsedWorkouts(prev => {
-      const next = new Set(prev)
-      next.delete(workoutId)
-      return next
-    })
     await updateWorkout(workoutId, { day })
   }
 
   const addExercise = async (workoutId: string, exerciseName: string) => {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
-
-    // Keep workout expanded
-    setCollapsedWorkouts(prev => {
-      const next = new Set(prev)
-      next.delete(workoutId)
-      return next
-    })
 
     await updateWorkout(workoutId, {
       exercises: [
@@ -76,13 +63,6 @@ export default function WorkoutPage() {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
 
-    // Keep workout expanded
-    setCollapsedWorkouts(prev => {
-      const next = new Set(prev)
-      next.delete(workoutId)
-      return next
-    })
-
     await updateWorkout(workoutId, {
       exercises: workout.exercises.map(exercise => 
         exercise.id === exerciseId ? { ...exercise, name } : exercise
@@ -93,13 +73,6 @@ export default function WorkoutPage() {
   const updateReps = async (workoutId: string, exerciseId: string, setIndex: number, reps: number) => {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
-
-    // Keep workout expanded
-    setCollapsedWorkouts(prev => {
-      const next = new Set(prev)
-      next.delete(workoutId)
-      return next
-    })
 
     await updateWorkout(workoutId, {
       exercises: workout.exercises.map(exercise => {
@@ -120,13 +93,6 @@ export default function WorkoutPage() {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
 
-    // Keep workout expanded
-    setCollapsedWorkouts(prev => {
-      const next = new Set(prev)
-      next.delete(workoutId)
-      return next
-    })
-
     await updateWorkout(workoutId, {
       exercises: workout.exercises.map(exercise => {
         if (exercise.id === exerciseId) {
@@ -143,13 +109,6 @@ export default function WorkoutPage() {
   const removeSet = async (workoutId: string, exerciseId: string, setIndex: number) => {
     const workout = workouts.find(w => w.id === workoutId)
     if (!workout) return
-
-    // Keep workout expanded
-    setCollapsedWorkouts(prev => {
-      const next = new Set(prev)
-      next.delete(workoutId)
-      return next
-    })
 
     await updateWorkout(workoutId, {
       exercises: workout.exercises.map(exercise => {
@@ -183,6 +142,12 @@ export default function WorkoutPage() {
   const handleStartEdit = (workout: typeof workouts[0]) => {
     setEditingWorkoutId(workout.id)
     setEditingName(workout.name)
+    // Ensure workout is expanded when starting edit
+    setCollapsedWorkouts(prev => {
+      const next = new Set(prev)
+      next.delete(workout.id)
+      return next
+    })
   }
 
   const handleSaveEdit = async () => {

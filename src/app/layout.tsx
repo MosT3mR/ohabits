@@ -4,11 +4,14 @@ import "./globals.css";
 import { WorkoutProvider } from '@/context/WorkoutContext'
 import SupabaseProvider from '@/providers/SupabaseProvider'
 import { AuthProvider } from '@/context/AuthContext'
+import { SelectedDateProvider } from '@/context/SelectedDateContext'
+import { HabitsProvider } from '@/context/HabitsContext'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
   subsets: ['latin'],
 });
+
 export const metadata: Metadata = {
   title: "Ohabits",
   description: "Track your habits and workouts",
@@ -55,9 +58,13 @@ export default function RootLayout({
       <body className={roboto.className}>
         <SupabaseProvider>
           <AuthProvider>
-            <WorkoutProvider>
-              {children}
-            </WorkoutProvider>
+            <SelectedDateProvider>
+              <WorkoutProvider>
+                <HabitsProvider>
+                  {children}
+                </HabitsProvider>
+              </WorkoutProvider>
+            </SelectedDateProvider>
           </AuthProvider>
         </SupabaseProvider>
       </body>
