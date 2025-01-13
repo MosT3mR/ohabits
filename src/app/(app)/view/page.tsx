@@ -374,48 +374,51 @@ export default function ViewPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-[#FCFCFC] border-2 border-[#FCFBFB] rounded-lg overflow-hidden">
-        <table className="w-full">
+      <div className="bg-[#FCFCFC] border-2 border-[#FCFBFB] rounded-lg overflow-x-auto">
+        <table className="w-full min-w-[400px]">
           <thead>
             <tr className="border-b-2 border-[#FCFBFB]">
-              <th className="py-3 px-4 text-left text-[#5F6666] font-semibold">Day</th>
-              <th className="py-3 px-4 text-left text-[#5F6666] font-semibold">Workout</th>
-              <th className="py-3 px-4 text-left text-[#5F6666] font-semibold">Cardio</th>
-              <th className="py-3 px-4 text-left text-[#5F6666] font-semibold">Weight</th>
-              <th className="py-3 px-4 text-left text-[#5F6666] font-semibold">Habits</th>
-              <th className="py-3 px-4 text-left text-[#5F6666] font-semibold">Mood</th>
+              <th className="py-2 px-1 text-left text-[#5F6666] font-semibold text-xs w-[7%]">Day</th>
+              <th className="py-2 px-1 text-left text-[#5F6666] font-semibold text-xs w-[15%]">Workout</th>
+              <th className="py-2 px-1 text-left text-[#5F6666] font-semibold text-xs w-[18%]">Cardio</th>
+              <th className="py-2 px-1 text-left text-[#5F6666] font-semibold text-xs w-[12%]">Weight</th>
+              <th className="py-2 px-1 text-left text-[#5F6666] font-semibold text-xs w-[24%]">Habits</th>
+              <th className="py-2 px-1 text-left text-[#5F6666] font-semibold text-xs w-[24%]">Mood</th>
             </tr>
           </thead>
           <tbody>
             {daysInMonth.map((date: Date) => (
               <tr 
                 key={date.toISOString()} 
-                className={`border-b border-[#FCFBFB] ${
+                className={`border-b border-[#FCFBFB] hover:bg-[#FCFBFB] transition-colors ${
                   date.toDateString() === new Date().toDateString() ? 'bg-[#FEF7F3]' : ''
                 }`}
               >
-                <td className="py-3 px-4 text-[#1E0C02] font-semibold">
+                <td className="py-1.5 px-1 text-[#1E0C02] font-medium text-xs">
                   {date.getDate()}
                 </td>
-                <td className="py-3 px-4 text-[#1E0C02]">
+                <td className="py-1.5 px-1 text-[#1E0C02] text-xs break-words">
                   {getWorkoutName(date)}
                 </td>
-                <td className="py-3 px-4 text-[#1E0C02]">
+                <td className="py-1.5 px-1 text-[#1E0C02] text-xs break-words">
                   {getCardioInfo(date)}
                 </td>
-                <td className="py-3 px-4 text-[#1E0C02]">
+                <td className="py-1.5 px-1 text-[#1E0C02] text-xs">
                   {getWeightInfo(date)}
                 </td>
-                <td className="py-3 px-4 text-[#1E0C02]">
+                <td className="py-1.5 px-1 text-[#1E0C02] text-xs">
                   {getHabitsForDate(date)}
                 </td>
-                <td className="py-3 px-4 text-[#1E0C02]">
+                <td className="py-1.5 px-1 text-[#1E0C02] text-xs">
                   {getMoodRating(date)}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="mt-4 text-xs text-[#5F6666] text-center md:hidden">
+        ← Swipe to view more →
       </div>
     </div>
   )
